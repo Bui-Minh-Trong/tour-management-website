@@ -475,6 +475,60 @@
                     wrapper.classList.remove("active");
                 }
             });
+
+            // Real-time currency format with dot separation
+            const currencyInputs = document.querySelectorAll(".currency-input");
+            
+            function formatNumber(val) {
+                if (!val) return "";
+                let cleanVal = val.toString().replace(/\D/g, "");
+                if (cleanVal === "") return "";
+                return Number(cleanVal).toLocaleString("vi-VN").replace(/,/g, ".");
+            }
+
+            currencyInputs.forEach(input => {
+                if (input.value) {
+                    input.value = formatNumber(input.value);
+                }
+
+                input.addEventListener("input", function(e) {
+                    let cursorPosition = this.selectionStart;
+                    let oldLength = this.value.length;
+                    
+                    let formatted = formatNumber(this.value);
+                    this.value = formatted;
+
+                    let newLength = this.value.length;
+                    cursorPosition = cursorPosition + (newLength - oldLength);
+                    this.setSelectionRange(cursorPosition, cursorPosition);
+                });
+
+                input.addEventListener("keydown", function(e) {
+                    let step = parseInt(this.getAttribute("step")) || 100000;
+                    let currentVal = parseInt(this.value.replace(/\./g, "")) || 0;
+
+                    if (e.key === "ArrowUp") {
+                        e.preventDefault();
+                        let newVal = currentVal + step;
+                        this.value = formatNumber(newVal.toString());
+                        this.dispatchEvent(new Event("change"));
+                    } else if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        let newVal = Math.max(0, currentVal - step);
+                        this.value = formatNumber(newVal.toString());
+                        this.dispatchEvent(new Event("change"));
+                    }
+                });
+            });
+
+            // Strip formatting dots before form submit
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", function() {
+                    form.querySelectorAll(".currency-input").forEach(input => {
+                        input.value = input.value.replace(/\./g, "");
+                    });
+                });
+            });
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

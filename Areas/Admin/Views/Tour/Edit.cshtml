@@ -82,7 +82,7 @@
                             <div class="col-md-6 mb-3">
                                 <label asp-for="GiaThamKhao" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
                                 <div class="input-group">
-                                    <input asp-for="GiaThamKhao" type="number" min="1000" class="form-control rounded-start-3" placeholder="Nhập giá..." />
+                                    <input asp-for="GiaThamKhao" type="text" class="form-control rounded-start-3 currency-input" placeholder="Nhập giá..." step="100000" />
                                     <span class="input-group-text bg-light">VND</span>
                                 </div>
                                 <span asp-validation-for="GiaThamKhao" class="text-danger small"></span>

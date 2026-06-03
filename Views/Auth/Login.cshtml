@@ -11,97 +11,223 @@
     <title>Đăng Nhập - Hệ Thống Quản Lý Tour Du Lịch</title>
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts Outfit & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
+        :root {
+            --primary-grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --accent-glow: 0 0 30px rgba(124, 58, 237, 0.3);
+        }
+
         body {
-            font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #090d16;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
             color: #f8fafc;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background gradient */
+        .bg-gradient-animate {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #090d16, #121829, #1a103c, #0b1d3a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -2;
+        }
+
+        @@keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating bokeh particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .particles li {
+            position: absolute;
+            display: block;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 50%;
+            bottom: -150px;
+            animation: floatBubble 25s infinite linear;
+        }
+
+        .particles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        .particles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        .particles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        .particles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .particles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        .particles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+        .particles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        .particles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        .particles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+        .particles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+        @@keyframes floatBubble {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 50%;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 20%;
+            }
         }
 
         .login-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 460px;
             padding: 15px;
+            z-index: 10;
         }
 
         .login-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 24px;
+            padding: 45px 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), var(--accent-glow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .login-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.6), 0 0 40px rgba(124, 58, 237, 0.4);
+            transform: translateY(-3px);
         }
 
         .brand-logo {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            width: 74px;
+            height: 74px;
+            background: var(--primary-grad);
             color: white;
-            border-radius: 16px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+            font-size: 32px;
+            margin: 0 auto 22px auto;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            animation: bounceIn 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @@keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .form-label {
-            font-weight: 500;
+            font-weight: 600;
+            color: #cbd5e1;
+            font-size: 0.88rem;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.25s ease;
+            background: rgba(15, 23, 42, 0.4);
+        }
+
+        .input-group:focus-within {
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .input-group-text {
+            background: transparent;
+            border: none;
             color: #94a3b8;
-            font-size: 0.9rem;
+            padding-left: 18px;
+            padding-right: 10px;
         }
 
         .form-control {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            border: none;
             color: #f8fafc;
-            border-radius: 12px;
-            padding: 12px 16px;
-            transition: all 0.2s ease;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
         .form-control:focus {
-            background: rgba(15, 23, 42, 0.8);
-            border-color: #3b82f6;
+            background: transparent;
+            box-shadow: none;
             color: #f8fafc;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            border: none;
+        }
+
+        .form-control::placeholder {
+            color: #475569;
+        }
+
+        /* Show/Hide password toggle */
+        .password-toggle {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            padding-right: 18px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: #c084fc;
         }
 
         .btn-login {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            background: var(--primary-grad);
             border: none;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
+            border-radius: 14px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: white;
-            margin-top: 15px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
         .btn-login:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, #5850ec 0%, #8b5cf6 100%);
         }
 
         .btn-login:active {
@@ -111,28 +237,46 @@
         .form-check-input {
             background-color: rgba(15, 23, 42, 0.6);
             border-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
         }
 
         .form-check-input:checked {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
+            background-color: #8b5cf6;
+            border-color: #8b5cf6;
         }
 
         .login-footer {
-            margin-top: 30px;
+            margin-top: 35px;
             text-align: center;
-            font-size: 0.85rem;
-            color: #64748b;
+            font-size: 0.82rem;
+            color: #475569;
         }
 
         .text-gradient {
-            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            background: linear-gradient(90deg, #a78bfa 0%, #cbd5e1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
+
+    <!-- Animated backgrounds -->
+    <div class="bg-gradient-animate"></div>
+    <ul class="particles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
 
     <div class="login-container">
         <div class="login-card">
@@ -140,58 +284,89 @@
                 <div class="brand-logo">
                     <i class="fa-solid fa-plane-departure"></i>
                 </div>
-                <h4 class="fw-bold mb-1">HỆ THỐNG QUẢN LÝ</h4>
-                <p class="text-gradient fw-semibold mb-4">TOUR DU LỊCH - ADMIN PANEL</p>
+                <h4 class="fw-extrabold mb-1" style="letter-spacing: 0.5px; font-weight: 800;">VINA TRAVEL</h4>
+                <p class="text-gradient fw-bold mb-4">HỆ THỐNG QUẢN LÝ ĐOÀN & TOUR</p>
             </div>
 
             <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
                 @Html.AntiForgeryToken()
 
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 rounded-3 py-2 px-3 text-start small mb-3"></div>
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger border-0 rounded-3 py-2 px-3 text-start small mb-4" style="background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444 !important; color: #fca5a5;">
+                        <i class="fa-solid fa-circle-exclamation me-2"></i>
+                        <span>Tên đăng nhập hoặc mật khẩu không chính xác.</span>
+                    </div>
+                }
 
                 <div class="mb-3">
-                    <label asp-for="TenDangNhap" class="form-label mb-1"></label>
+                    <label asp-for="TenDangNhap" class="form-label mb-1">Tên Đăng Nhập</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0 border-white-10 text-muted" style="border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px 0 0 12px;">
+                        <span class="input-group-text">
                             <i class="fa-regular fa-user"></i>
                         </span>
-                        <input asp-for="TenDangNhap" class="form-control border-start-0" style="border-radius: 0 12px 12px 0;" placeholder="Nhập tên đăng nhập" autocomplete="off" />
+                        <!-- Bind dữ liệu cũ từ model khi validate thất bại bằng thuộc tính value -->
+                        <input asp-for="TenDangNhap" value="@Model?.TenDangNhap" class="form-control" placeholder="Tên tài khoản hoặc email" autocomplete="off" required />
                     </div>
-                    <span asp-validation-for="TenDangNhap" class="text-danger small mt-1 d-block"></span>
+                    <span asp-validation-for="TenDangNhap" class="text-danger small mt-1 d-block" style="color: #fca5a5 !important;"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="MatKhau" class="form-label mb-1"></label>
+                    <label asp-for="MatKhau" class="form-label mb-1">Mật Khẩu</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0 border-white-10 text-muted" style="border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px 0 0 12px;">
+                        <span class="input-group-text">
                             <i class="fa-solid fa-lock"></i>
                         </span>
-                        <input asp-for="MatKhau" class="form-control border-start-0" style="border-radius: 0 12px 12px 0;" placeholder="Nhập mật khẩu" />
+                        <input asp-for="MatKhau" type="password" id="passwordInput" class="form-control" placeholder="Mật khẩu bảo mật" required />
+                        <button type="button" class="password-toggle" id="togglePasswordBtn" title="Hiển thị mật khẩu">
+                            <i class="fa-regular fa-eye-slash" id="toggleIcon"></i>
+                        </button>
                     </div>
-                    <span asp-validation-for="MatKhau" class="text-danger small mt-1 d-block"></span>
+                    <span asp-validation-for="MatKhau" class="text-danger small mt-1 d-block" style="color: #fca5a5 !important;"></span>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="form-check">
                         <input asp-for="RememberMe" class="form-check-input" type="checkbox" id="RememberMeCheck" />
-                        <label class="form-check-label text-muted small" for="RememberMeCheck" style="user-select: none;">
-                            Duy trì đăng nhập
+                        <label class="form-check-label text-muted small" for="RememberMeCheck" style="user-select: none; color: #94a3b8 !important;">
+                            Ghi nhớ đăng nhập
                         </label>
                     </div>
                 </div>
 
                 <button type="submit" class="btn btn-login w-100">
-                    <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>Đăng Nhập
+                    ĐĂNG NHẬP <i class="fa-solid fa-arrow-right ms-2"></i>
                 </button>
             </form>
 
             <div class="login-footer">
-                <span>&copy; @DateTime.Today.Year - TourManagement System. All rights reserved.</span>
+                <span>&copy; @DateTime.Today.Year - VinaTravel. Hệ thống được bảo mật.</span>
             </div>
         </div>
     </div>
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script toggle ẩn hiện mật khẩu -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const passwordInput = document.getElementById("passwordInput");
+            const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+            const toggleIcon = document.getElementById("toggleIcon");
+
+            togglePasswordBtn.addEventListener("click", function() {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleIcon.classList.remove("fa-eye-slash");
+                    toggleIcon.classList.add("fa-eye");
+                } else {
+                    passwordInput.type = "password";
+                    toggleIcon.classList.remove("fa-eye");
+                    toggleIcon.classList.add("fa-eye-slash");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
