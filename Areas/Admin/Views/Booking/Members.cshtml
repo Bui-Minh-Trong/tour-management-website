@@ -1,0 +1,171 @@
+@model QuanLyTourDuLich.ViewModels.BookingMembersVM
+@{
+    ViewData["Title"] = "Thành Viên Đoàn";
+    ViewData["ActiveMenu"] = "Booking";
+}
+
+<div class="container-fluid p-0">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="/Admin/Booking" class="text-decoration-none">Đặt Tour</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Danh sách thành viên đoàn</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-users text-primary me-2"></i>Thành Viên Đoàn Đi Tour
+            </h1>
+            <p class="text-muted mb-0">Quản lý danh sách chi tiết khách hàng tham gia trong phiếu đặt tour #@Model.MaDangKy.</p>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-circle-check fs-5 me-2"></i>
+                <div>@TempData["SuccessMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        <!-- Left: Current Members List -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 card-table">
+                <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Danh Sách Đã Thêm</h5>
+                        <small class="text-muted">Đoàn: <strong>@Model.TenDoan</strong> | Số chỗ đặt: <strong>@Model.SoNguoiDi</strong> khách</small>
+                    </div>
+                    <span class="badge bg-primary px-3 py-2 rounded-pill font-weight-bold">
+                        Đã khai báo: @Model.Members.Count / @Model.SoNguoiDi người
+                    </span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-uppercase fs-7 font-weight-bold text-secondary">
+                            <tr>
+                                <th class="ps-4">Họ Tên</th>
+                                <th>Số Điện Thoại</th>
+                                <th>CCCD</th>
+                                <th class="text-center" style="width: 150px;">Đại Diện</th>
+                                <th class="text-center pe-4" style="width: 120px;">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Members != null && Model.Members.Any())
+                            {
+                                foreach (var member in Model.Members)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="font-weight-bold text-dark" style="font-weight: 600;">@member.HoTen</div>
+                                            <small class="text-muted">@member.Email</small>
+                                        </td>
+                                        <td>
+                                            <span class="font-weight-semibold">@member.Sdt</span>
+                                        </td>
+                                        <td>
+                                            <span>@member.Cccd</span>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (member.LaNguoiDaiDien)
+                                            {
+                                                <span class="badge bg-success px-2.5 py-1.5 rounded-pill"><i class="fa-solid fa-star me-1"></i>Đại diện</span>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="SetRepresentative" method="post" class="d-inline">
+                                                    <input type="hidden" name="bookingId" value="@Model.MaDangKy" />
+                                                    <input type="hidden" name="maKh" value="@member.MaKh" />
+                                                    <button type="submit" class="btn btn-xs btn-outline-warning rounded-3" title="Đặt làm người đại diện">
+                                                        Đặt đại diện
+                                                    </button>
+                                                </form>
+                                            }
+                                        </td>
+                                        <td class="text-center pe-4">
+                                            <form asp-action="RemoveMember" method="post" onsubmit="return confirm('Bạn có muốn xóa thành viên này khỏi đoàn?');">
+                                                <input type="hidden" name="bookingId" value="@Model.MaDangKy" />
+                                                <input type="hidden" name="maKh" value="@member.MaKh" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-3" title="Xóa thành viên">
+                                                    <i class="fa-solid fa-trash-can"></i> Xóa
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-users-slash fs-1 mb-3 d-block text-secondary"></i>
+                                        Chưa có thành viên nào được khai báo trong đoàn.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-white border-top py-3 d-flex justify-content-between">
+                    <a href="/Admin/Booking" class="btn btn-light border px-4 rounded-3">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Quay lại Đặt Tour
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Add New Member Form -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom py-3 px-4">
+                    <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Khai Báo Thành Viên</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (Model.Members.Count >= Model.SoNguoiDi)
+                    {
+                        <div class="alert alert-warning border-0 rounded-3 mb-0" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                            Đoàn đã khai báo đủ số lượng người đăng ký (@Model.SoNguoiDi khách). Không cần thêm nữa.
+                        </div>
+                    }
+                    else
+                    {
+                        <form asp-action="AddMember" method="post">
+                            <input type="hidden" name="bookingId" value="@Model.MaDangKy" />
+                            
+                            <div class="mb-4">
+                                <label class="form-label font-weight-semibold text-muted small mb-1">Chọn Khách Hàng</label>
+                                <select name="newMaKh" asp-items="Model.CustomerSelectList" class="form-select rounded-3 bg-light" required>
+                                    <option value="">-- Chọn khách hàng thành viên --</option>
+                                </select>
+                                <small class="text-muted mt-2 d-block">
+                                    Thành viên phải được khởi tạo hồ sơ ở danh mục khách hàng trước.
+                                </small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-semibold">
+                                <i class="fa-solid fa-plus me-2"></i>Thêm Vào Đoàn
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+
+            <!-- Note Card -->
+            <div class="card border-0 shadow-sm rounded-3 mt-4 bg-primary bg-opacity-5 border-start border-primary border-3">
+                <div class="card-body p-4">
+                    <h6 class="font-weight-bold text-primary mb-2"><i class="fa-solid fa-circle-info me-2"></i>Quy định nghiệp vụ</h6>
+                    <p class="text-muted small mb-0">
+                        Hệ thống yêu cầu khai báo đầy đủ thông tin cá nhân của các thành viên tham gia tour phục vụ công tác làm bảo hiểm, đặt chỗ máy bay, xe khách và khách sạn. Người đại diện là người chịu trách nhiệm nhận thông tin hóa đơn và thanh toán.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

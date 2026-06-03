@@ -129,6 +129,9 @@
                                                 <i class="fa-solid fa-file-invoice-dollar"></i> Thu tiền
                                             </a>
                                         }
+                                        <a href="/Admin/Booking/Members?bookingId=@item.MaDangKy" class="btn btn-xs btn-outline-info rounded-3 px-2 py-1 fs-7" title="Danh sách thành viên đoàn">
+                                            <i class="fa-solid fa-users"></i> Thành viên
+                                        </a>
                                         <form action="/Admin/Booking/Delete/@item.MaDangKy" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đặt tour này không?');">
                                             <button type="submit" class="btn btn-xs btn-outline-danger rounded-3 px-2 py-1 fs-7" title="Hủy đặt tour">
                                                 <i class="fa-solid fa-trash"></i> Hủy
