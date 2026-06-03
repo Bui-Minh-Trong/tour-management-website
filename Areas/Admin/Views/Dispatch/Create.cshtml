@@ -1,0 +1,146 @@
+@model QuanLyTourDuLich.ViewModels.DispatchFormVM
+@{
+    ViewData["Title"] = "Điều Phối Tour";
+    ViewData["ActiveMenu"] = "Doan";
+}
+
+<div class="container-fluid p-0">
+    <!-- Header -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="/Admin/DoanDuLich" class="text-decoration-none">Đoàn Du Lịch</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Điều phối tour</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-truck-ramp-box text-primary me-2"></i>Điều Phối Hướng Dẫn Viên & Vận Chuyển
+            </h1>
+            <p class="text-muted mb-0">Phân công nhân sự hướng dẫn viên, xe cộ và tài xế vận chuyển phục vụ đoàn du lịch thực tế.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a href="/Admin/DoanDuLich" class="btn btn-light border px-4 py-2 rounded-3">
+                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Form Column -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom py-3 px-4">
+                    <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Thông Tin Điều Phối</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 shadow-sm rounded-3 mb-4"></div>
+
+                        <!-- Select Group -->
+                        <div class="mb-4">
+                            <label asp-for="MaDoan" class="form-label font-weight-semibold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-users-rectangle text-secondary"></i></span>
+                                <select asp-for="MaDoan" asp-items="Model.DoanDuLiches" class="form-select rounded-end-3 py-2.5">
+                                    <option value="">-- Chọn đoàn du lịch cần điều phối --</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="MaDoan" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <!-- Select Guide -->
+                            <div class="col-md-12">
+                                <label asp-for="MaNvHuongDanVien" class="form-label font-weight-semibold text-dark"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa-solid fa-user-tie text-secondary"></i></span>
+                                    <select asp-for="MaNvHuongDanVien" asp-items="Model.HuongDanViens" class="form-select rounded-end-3 py-2.5">
+                                        <option value="">-- Chọn hướng dẫn viên dẫn đoàn --</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="MaNvHuongDanVien" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <!-- Select Vehicle -->
+                            <div class="col-md-6">
+                                <label asp-for="MaPhuongTien" class="form-label font-weight-semibold text-dark"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa-solid fa-bus text-secondary"></i></span>
+                                    <select asp-for="MaPhuongTien" asp-items="Model.PhuongTiens" class="form-select rounded-end-3 py-2.5">
+                                        <option value="">-- Chọn phương tiện/xe --</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="MaPhuongTien" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <!-- Select Driver -->
+                            <div class="col-md-6">
+                                <label asp-for="MaTaiXe" class="form-label font-weight-semibold text-dark"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="fa-solid fa-id-card text-secondary"></i></span>
+                                    <select asp-for="MaTaiXe" asp-items="Model.TaiXes" class="form-select rounded-end-3 py-2.5">
+                                        <option value="">-- Chọn tài xế lái xe --</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="MaTaiXe" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-end gap-2 border-top pt-4">
+                            <a href="/Admin/DoanDuLich" class="btn btn-light border px-4 py-2.5 rounded-3 fw-semibold">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-primary px-4 py-2.5 rounded-3 fw-semibold shadow-sm">
+                                <i class="fa-solid fa-truck-ramp-box me-2"></i>Xác Nhận Điều Phối
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Column -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-white border-bottom py-3 px-4">
+                    <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Quy Tắc Điều Phối</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
+                            <i class="fa-solid fa-user-lock"></i>
+                        </div>
+                        <div>
+                            <h6 class="font-weight-bold text-dark mb-1">Xác thực trùng lịch</h6>
+                            <p class="text-muted small mb-0">Hệ thống sẽ tự động kiểm tra xem Hướng dẫn viên, Phương tiện hoặc Tài xế được chọn có đang bận phục vụ một đoàn khác trong cùng khoảng thời gian hay không.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <div>
+                            <h6 class="font-weight-bold text-dark mb-1">Chỉnh sửa phân công</h6>
+                            <p class="text-muted small mb-0">Nếu đoàn du lịch đã có sự phân công xe cộ hoặc hướng dẫn viên từ trước, việc xác nhận điều phối mới sẽ tự động ghi đè bản ghi cũ.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                        </div>
+                        <div>
+                            <h6 class="font-weight-bold text-dark mb-1">Hoàn tất điều hành</h6>
+                            <p class="text-muted small mb-0">Sau khi điều phối thành công, trạng thái vận hành của đoàn sẽ tự động được cập nhật và hướng dẫn viên có thể bắt đầu lập nhật ký hành trình.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
