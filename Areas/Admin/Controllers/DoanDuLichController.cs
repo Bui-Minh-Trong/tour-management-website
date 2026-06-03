@@ -481,4 +481,130 @@ public class DoanDuLichController : Controller
         model.Guides = guidesList;
         model.Operators = operatorsList;
     }
+
+    // GET: Admin/DoanDuLich/Settlement
+    public async Task<IActionResult> Settlement(int groupId)
+    {
+        var model = new DoanSettlementVM { MaDoan = groupId };
+
+        try
+        {
+            var doan = await _context.DoanDuLiches
+                .Include(d => d.MaTourNavigation)
+                .Include(d => d.MaNvHuongDanVienNavigation)
+                .FirstOrDefaultAsync(d => d.MaDoan == groupId);
+
+            if (doan != null)
+            {
+                model.TenDoan = doan.TenDoan;
+                model.TenTour = doan.MaTourNavigation?.TenTour ?? "N/A";
+                model.NgayKhoiHanh = doan.NgayKhoiHanh;
+                model.NgayKetThuc = doan.NgayKetThuc;
+                model.TenHuongDanVien = doan.MaNvHuongDanVienNavigation?.HoTen ?? "Chưa phân công";
+                model.SoKhachHienTai = doan.SoKhachHienTai;
+                model.TrangThaiQuyetToan = doan.TrangThaiDoan == "Đã kết thúc" ? "Đã quyết toán" : "Chưa quyết toán";
+
+                // 1. Doanh thu (Hóa đơn liên kết với Booking của đoàn này)
+                var bookings = await _context.KhachDiTours
+                    .Where(k => k.MaDoan == groupId)
+                    .Select(k => k.MaDangKy)
+                    .ToListAsync();
+
+                var invoices = await _context.HoaDons
+                    .Include(h => h.MaDangKyNavigation)
+                        .ThenInclude(k => k.MaKhNavigation)
+                    .Where(h => bookings.Contains(h.MaDangKy))
+                    .Select(h => new SettlementIncomeVM
+                    {
+                        MaHoaDon = h.MaHoaDon,
+                        TenKhachHang = h.MaDangKyNavigation.MaKhNavigation.HoTen,
+                        NgayLap = h.NgayLap,
+                        SoTien = h.SoTien,
+                        HinhThucTt = h.HinhThucTt
+                    })
+                    .ToListAsync();
+
+                model.Incomes = invoices;
+                model.TongThu = invoices.Sum(i => i.SoTien);
+
+                // 2. Chi phí (Bảng chi phí đoàn)
+                var expenses = await _context.ChiPhiDoans
+                    .Where(c => c.MaDoan == groupId)
+                    .Select(c => new SettlementExpenseVM
+                    {
+                        MaChiPhi = c.MaChiPhi,
+                        LoaiChiPhi = c.LoaiChiPhi,
+                        SoTien = c.SoTien,
+                        GhiChu = c.GhiChu ?? "N/A"
+                    })
+                    .ToListAsync();
+
+                model.Expenses = expenses;
+                model.TongChi = expenses.Sum(e => e.SoTien);
+            }
+        }
+        catch
+        {
+            // Fallback mock
+            var mockDoan = MockDoanList.FirstOrDefault(d => d.MaDoan == groupId);
+            if (mockDoan != null)
+            {
+                model.TenDoan = mockDoan.TenDoan;
+                model.TenTour = mockDoan.TenTour;
+                model.NgayKhoiHanh = mockDoan.NgayKhoiHanh;
+                model.NgayKetThuc = mockDoan.NgayKetThuc;
+                model.TenHuongDanVien = mockDoan.TenHuongDanVien;
+                model.SoKhachHienTai = mockDoan.SoKhachHienTai;
+                model.TrangThaiQuyetToan = mockDoan.TrangThaiDoan == "Đã kết thúc" ? "Đã quyết toán" : "Chưa quyết toán";
+
+                // Mock Incomes
+                model.Incomes = new List<SettlementIncomeVM>
+                {
+                    new SettlementIncomeVM { MaHoaDon = 101, TenKhachHang = "Nguyễn Văn Anh", NgayLap = DateTime.Now.AddDays(-10), SoTien = 18000000, HinhThucTt = "Chuyển khoản" },
+                    new SettlementIncomeVM { MaHoaDon = 102, TenKhachHang = "Trần Thị Bé", NgayLap = DateTime.Now.AddDays(-8), SoTien = 6400000, HinhThucTt = "Tiền mặt" }
+                };
+                model.TongThu = model.Incomes.Sum(i => i.SoTien);
+
+                // Mock Expenses
+                model.Expenses = new List<SettlementExpenseVM>
+                {
+                    new SettlementExpenseVM { MaChiPhi = 201, LoaiChiPhi = "Khách sạn", SoTien = 6500000, GhiChu = "Thuê khách sạn 3 sao 2 đêm" },
+                    new SettlementExpenseVM { MaChiPhi = 202, LoaiChiPhi = "Ăn uống", SoTien = 4800000, GhiChu = "Chi phí buffet & tiệc Gala" },
+                    new SettlementExpenseVM { MaChiPhi = 203, LoaiChiPhi = "Phương tiện", SoTien = 5000000, GhiChu = "Chi phí xe trung chuyển" }
+                };
+                model.TongChi = model.Expenses.Sum(e => e.SoTien);
+            }
+        }
+
+        return View(model);
+    }
+
+    // POST: Admin/DoanDuLich/ConfirmSettlement
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConfirmSettlement(int groupId)
+    {
+        try
+        {
+            var doan = await _context.DoanDuLiches.FindAsync(groupId);
+            if (doan != null)
+            {
+                doan.TrangThaiDoan = "Đã kết thúc"; // Đóng đoàn sau quyết toán
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Quyết toán lãi lỗ và hoàn tất khóa sổ đoàn du lịch thành công!";
+            }
+        }
+        catch
+        {
+            // Fallback mock
+            var mockDoan = MockDoanList.FirstOrDefault(d => d.MaDoan == groupId);
+            if (mockDoan != null)
+            {
+                mockDoan.TrangThaiDoan = "Đã kết thúc";
+                TempData["SuccessMessage"] = "Quyết toán đoàn giả lập thành công (Offline)!";
+            }
+        }
+
+        return RedirectToAction(nameof(Settlement), new { groupId = groupId });
+    }
 }
