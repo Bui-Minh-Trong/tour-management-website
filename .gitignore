@@ -1,0 +1,90 @@
+## ASP.NET Core .gitignore - Tour Management Website
+## Chuẩn Visual Studio / .NET Core
+
+# ============================================================
+# Build Output
+# ============================================================
+[Oo]bj/
+[Bb]in/
+[Ll]og/
+[Ll]ogs/
+out/
+build/
+publish/
+
+# ============================================================
+# Visual Studio Files
+# ============================================================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vcxproj.filters
+.vscode/
+
+# ============================================================
+# NuGet
+# ============================================================
+*.nupkg
+*.snupkg
+**/[Pp]ackages/
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ============================================================
+# .NET / Runtime
+# ============================================================
+project.lock.json
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ============================================================
+# ASP.NET Core
+# ============================================================
+**/wwwroot/lib/
+**/node_modules/
+*.css.map
+*.js.map
+appsettings.Development.json
+
+# ============================================================
+# Database / Secrets
+# ============================================================
+*.mdf
+*.ldf
+*.ndf
+*.db
+*.sqlite
+*.sqlite3
+appsettings.Production.json
+secrets.json
+*.pfx
+*.key
+
+# ============================================================
+# OS Files
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+# ============================================================
+# Rider / JetBrains
+# ============================================================
+.idea/
+*.DotSettings.user
+
+# ============================================================
+# Publish Profiles
+# ============================================================
+**/Properties/PublishProfiles/
+PublishScripts/
