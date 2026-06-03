@@ -18,11 +18,13 @@ public class TourController : Controller
 {
     private readonly QlyTourDuLichContext _context;
     private readonly ITourBookingService _service;
+    private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment;
 
-    public TourController(QlyTourDuLichContext context, ITourBookingService service)
+    public TourController(QlyTourDuLichContext context, ITourBookingService service, Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostEnvironment)
     {
         _context = context;
         _service = service;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     // GET: Admin/Tour or Admin/Tour/Index
@@ -60,7 +62,6 @@ public class TourController : Controller
         return View(new TourViewModel());
     }
 
-    // POST: Admin/Tour/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(TourViewModel model)
@@ -85,6 +86,20 @@ public class TourController : Controller
                 return View(model);
             }
 
+            // Xử lý lưu File hình ảnh lên Server (nếu có) - Khớp 100% Activity Diagram "Thêm mới Tour"
+            string? uniqueFileName = null;
+            if (model.HinhAnhUpload != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "tours");
+                Directory.CreateDirectory(uploadsFolder);
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.HinhAnhUpload.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.HinhAnhUpload.CopyToAsync(fileStream);
+                }
+            }
+
             // BƯỚC 4 (Xử lý Thành công):
             // [NHÁNH ĐÚNG]: Nếu chưa tồn tại, Map dữ liệu từ TourViewModel sang Entity Tour.
             var tour = new Tour
@@ -102,8 +117,8 @@ public class TourController : Controller
             await _context.SaveChangesAsync();
 
             // BƯỚC 5 (Kết thúc): Sử dụng TempData và Redirect về action Index.
-            TempData["Success"] = "Thêm tour thành công!";
-            TempData["SuccessMessage"] = "Thêm tour thành công!";
+            TempData["Success"] = "Thêm tour và tải lên hình ảnh thành công!";
+            TempData["SuccessMessage"] = "Thêm tour và tải lên hình ảnh thành công!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
@@ -182,6 +197,19 @@ public class TourController : Controller
             {
                 TempData["ErrorMessage"] = "Không tìm thấy Tour tương ứng trong hệ thống.";
                 return RedirectToAction(nameof(Index));
+            }
+
+            // Xử lý lưu File hình ảnh lên Server (nếu có) - Khớp 100% Activity Diagram "Chỉnh sửa Tour"
+            if (model.HinhAnhUpload != null)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "tours");
+                Directory.CreateDirectory(uploadsFolder);
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.HinhAnhUpload.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.HinhAnhUpload.CopyToAsync(fileStream);
+                }
             }
 
             tourEntity.TenTour = model.TenTour.Trim();

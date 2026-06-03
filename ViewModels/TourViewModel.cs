@@ -32,4 +32,10 @@ public class TourViewModel
     [Range(1000, 999999999999, ErrorMessage = "Giá tham khảo phải lớn hơn hoặc bằng 1,000 VND.")]
     [Display(Name = "Giá tham khảo")]
     public decimal GiaThamKhao { get; set; }
+
+    [Display(Name = "Hình ảnh đại diện")]
+    public Microsoft.AspNetCore.Http.IFormFile? HinhAnhUpload { get; set; }
+
+    [Display(Name = "Đường dẫn hình ảnh")]
+    public string? HinhAnh { get; set; }
 }

@@ -28,7 +28,7 @@
                     <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Thông tin chi tiết Tour</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form action="/Admin/Tour/Create" method="post">
+                    <form action="/Admin/Tour/Create" method="post" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
                         
                         @if (!ViewData.ModelState.IsValid)
@@ -86,6 +86,12 @@
                                 </div>
                                 <span asp-validation-for="GiaThamKhao" class="text-danger small"></span>
                             </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="HinhAnhUpload" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                            <input asp-for="HinhAnhUpload" type="file" class="form-control rounded-3" accept="image/*" />
+                            <span asp-validation-for="HinhAnhUpload" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-4">
