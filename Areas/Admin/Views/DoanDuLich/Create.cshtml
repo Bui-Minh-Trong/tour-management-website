@@ -1,0 +1,130 @@
+@model QuanLyTourDuLich.ViewModels.DoanDuLichFormVM
+
+@{
+    ViewData["Title"] = "Lập Đoàn Du Lịch Mới";
+    ViewData["ActiveMenu"] = "Doan";
+}
+
+<div class="container-fluid p-0">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="/Admin/DoanDuLich" class="text-decoration-none">Quản lý Đoàn</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Lập đoàn mới</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-plus text-primary me-2"></i>Lập Đoàn Du Lịch Mới
+            </h1>
+            <p class="text-muted mb-0">Thiết lập đoàn du lịch thực tế, chọn tour mẫu, gán hướng dẫn viên và cấu hình thời gian khởi hành.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom p-3">
+                    <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Thông tin chi tiết Đoàn</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/Admin/DoanDuLich/Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-circle-exclamation fs-5 me-2"></i>
+                                    <div>
+                                        <strong>Vui lòng kiểm tra lại các lỗi bên dưới:</strong>
+                                        <div asp-validation-summary="All" class="text-danger mt-1 small"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="TenDoan" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                            <input asp-for="TenDoan" class="form-control rounded-3" placeholder="Nhập tên đoàn du lịch (VD: Đoàn khách du lịch Hè 2026 - Nha Trang)..." />
+                            <span asp-validation-for="TenDoan" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaTour" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <select asp-for="MaTour" asp-items="Model.Tours" class="form-select rounded-3">
+                                    <option value="">-- Chọn tour mẫu du lịch --</option>
+                                </select>
+                                <span asp-validation-for="MaTour" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaNvHuongDanVien" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <select asp-for="MaNvHuongDanVien" asp-items="Model.Guides" class="form-select rounded-3">
+                                    <option value="">-- Chọn hướng dẫn viên điều hành --</option>
+                                </select>
+                                <span asp-validation-for="MaNvHuongDanVien" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NgayKhoiHanh" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <input asp-for="NgayKhoiHanh" type="date" class="form-control rounded-3" />
+                                <span asp-validation-for="NgayKhoiHanh" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NgayKetThuc" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <input asp-for="NgayKetThuc" type="date" class="form-control rounded-3" />
+                                <span asp-validation-for="NgayKetThuc" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SoLuongToiDa" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <div class="input-group">
+                                    <input asp-for="SoLuongToiDa" type="number" min="1" class="form-control rounded-start-3" placeholder="Số khách tối đa..." />
+                                    <span class="input-group-text bg-light">Khách</span>
+                                </div>
+                                <span asp-validation-for="SoLuongToiDa" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TrangThaiDoan" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <select asp-for="TrangThaiDoan" class="form-select rounded-3">
+                                    <option value="Lên kế hoạch">Lên kế hoạch</option>
+                                    <option value="Đang nhận khách">Đang nhận khách</option>
+                                    <option value="Đủ khách">Đủ khách</option>
+                                    <option value="Đã hủy">Đã hủy</option>
+                                </select>
+                                <span asp-validation-for="TrangThaiDoan" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        @* MaNvDieuHanh: Tương ứng với OperatorID trong Class Diagram - NV Điều hành phụ trách đoàn *@
+                        <div class="mb-3">
+                            <label asp-for="MaNvDieuHanh" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                            <select asp-for="MaNvDieuHanh" asp-items="Model.Operators" class="form-select rounded-3">
+                                <option value="">-- Chọn nhân viên điều hành (tùy chọn) --</option>
+                            </select>
+                            <span class="form-text text-muted small">
+                                <i class="fa-solid fa-circle-info me-1"></i>
+                                Nhân viên Điều hành là người lên kế hoạch và giám sát toàn bộ hoạt động của đoàn (khác với Hướng dẫn viên đi cùng đoàn).
+                            </span>
+                            <span asp-validation-for="MaNvDieuHanh" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                            <a href="/Admin/DoanDuLich" class="btn btn-light px-4 py-2 rounded-3 border">
+                                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3">
+                                <i class="fa-solid fa-save me-1"></i> Lập đoàn
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

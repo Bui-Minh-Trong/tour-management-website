@@ -1,0 +1,145 @@
+@model IEnumerable<QuanLyTourDuLich.ViewModels.ChiPhiDoanListVM>
+
+@{
+    ViewData["Title"] = "Quản lý Chi Phí Đoàn";
+    ViewData["ActiveMenu"] = "ChiPhiDoan";
+}
+
+<div class="container-fluid p-0">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-file-invoice text-primary me-2"></i>Quản Lý Chi Phí Đoàn
+            </h1>
+            <p class="text-muted mb-0">Theo dõi, kiểm soát các khoản chi thực tế phát sinh trong suốt chuyến đi của đoàn.</p>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <a href="/Admin/ChiPhiDoan/Create" class="btn btn-primary px-4 py-2 shadow-sm rounded-3">
+                <i class="fa-solid fa-plus me-2"></i>Lập Phiếu Chi
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-circle-check fs-5 me-2"></i>
+                <div>@TempData["SuccessMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-circle-exclamation fs-5 me-2"></i>
+                <div>@TempData["ErrorMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Search Card -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-body p-3">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Tìm theo nội dung chi, tên đoàn du lịch..." />
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Table Card -->
+    <div class="card border-0 shadow-sm rounded-3 overflow-hidden card-table">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="chiPhiTable">
+                <thead class="table-light text-uppercase fs-7 font-weight-bold text-secondary">
+                    <tr>
+                        <th class="ps-4" style="width: 80px;">Số PC</th>
+                        <th>Đoàn Du Lịch</th>
+                        <th>Nội Dung Chi</th>
+                        <th class="text-end" style="width: 160px;">Số Tiền Chi</th>
+                        <th>Ngày Chi</th>
+                        <th>Người Lập Phiếu</th>
+                        <th class="text-center pe-4" style="width: 150px;">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 font-weight-bold text-dark">#@item.MaChiPhi</td>
+                                <td>
+                                    <div class="font-weight-bold text-dark">@item.TenDoan</div>
+                                </td>
+                                <td>
+                                    <div class="text-dark font-weight-semibold">@item.NoiDungChi</div>
+                                </td>
+                                <td class="text-end font-weight-bold text-danger">
+                                    -@item.SoTien.ToString("N0") <small>VND</small>
+                                </td>
+                                <td>
+                                    <span class="text-muted"><i class="fa-regular fa-clock me-1"></i>@item.NgayChi.ToString("dd/MM/yyyy HH:mm")</span>
+                                </td>
+                                <td>
+                                    <span class="text-dark"><i class="fa-solid fa-user-tie text-secondary me-1"></i>@item.TenNhanVienLap</span>
+                                </td>
+                                <td class="text-center pe-4">
+                                    <form action="/Admin/ChiPhiDoan/Delete/@item.MaChiPhi" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn hủy phiếu chi này không?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-3" title="Hủy phiếu chi">
+                                            <i class="fa-solid fa-trash-can"></i> Hủy chi
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-file-invoice fs-1 mb-3 d-block text-secondary"></i>
+                                Chưa có ghi nhận khoản chi nào cho đoàn du lịch.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const tableRows = document.querySelectorAll("#chiPhiTable tbody tr");
+
+            searchInput.addEventListener("input", function() {
+                const searchText = searchInput.value.toLowerCase().trim();
+
+                tableRows.forEach(row => {
+                    if (row.cells.length < 2) return;
+
+                    const groupName = row.cells[1].innerText.toLowerCase();
+                    const content = row.cells[2].innerText.toLowerCase();
+
+                    const matches = groupName.includes(searchText) || content.includes(searchText);
+
+                    if (matches) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+    </script>
+}

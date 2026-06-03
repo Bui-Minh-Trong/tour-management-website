@@ -1,0 +1,299 @@
+@model QuanLyTourDuLich.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Trang Chủ Dashboard";
+    ViewData["ActiveMenu"] = "Dashboard";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold text-slate-800 mb-0">Hệ Thống Thống Kê & Báo Cáo</h1>
+            <p class="text-muted small mb-0">Theo dõi doanh thu, số lượng khách hàng và tỷ lệ đăng ký tour du lịch.</p>
+        </div>
+        <div class="text-muted small">
+            <i class="fa-regular fa-calendar-days me-1"></i> Hôm nay: @DateTime.Today.ToString("dd/MM/yyyy")
+        </div>
+    </div>
+
+    <!-- Cards Row -->
+    <div class="row g-4 mb-4">
+        <!-- Card 1: Tổng Số Tour -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small text-uppercase fw-semibold mb-1">Tổng Số Tour</p>
+                            <h3 class="fw-bold mb-0">@Model.TongSoTour</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-3 p-2 text-white">
+                            <i class="fa-solid fa-route fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-absolute bottom-0 start-0 end-0 bg-black bg-opacity-10 py-2 px-4 text-white-50 small d-flex justify-content-between align-items-center">
+                    <span>Xem danh sách</span>
+                    <a href="/Admin/Tour" class="text-white text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Tổng Doanh Thu -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small text-uppercase fw-semibold mb-1">Tổng Doanh Thu</p>
+                            <h3 class="fw-bold mb-0">@Model.TongDoanhThu.ToString("N0") <span style="font-size: 1.1rem;">đ</span></h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-3 p-2 text-white">
+                            <i class="fa-solid fa-sack-dollar fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-absolute bottom-0 start-0 end-0 bg-black bg-opacity-10 py-2 px-4 text-white-50 small d-flex justify-content-between align-items-center">
+                    <span>Xem hóa đơn</span>
+                    <a href="/Admin/HoaDon" class="text-white text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Tổng Số Lượt Khách -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small text-uppercase fw-semibold mb-1">Tổng Lượt Khách</p>
+                            <h3 class="fw-bold mb-0">@Model.TongLuotKhach</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-3 p-2 text-white">
+                            <i class="fa-solid fa-users fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-absolute bottom-0 start-0 end-0 bg-black bg-opacity-10 py-2 px-4 text-white-50 small d-flex justify-content-between align-items-center">
+                    <span>Xem danh sách đặt</span>
+                    <a href="/Admin/Booking" class="text-white text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Tổng Số Đoàn -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small text-uppercase fw-semibold mb-1">Tổng Số Đoàn</p>
+                            <h3 class="fw-bold mb-0">@Model.TongSoDoan</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-3 p-2 text-white">
+                            <i class="fa-solid fa-users-rectangle fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-absolute bottom-0 start-0 end-0 bg-black bg-opacity-10 py-2 px-4 text-white-50 small d-flex justify-content-between align-items-center">
+                    <span>Xem đoàn du lịch</span>
+                    <a href="/Admin/DoanDuLich" class="text-white text-decoration-none"><i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts & Lists Row -->
+    <div class="row g-4">
+        <!-- Left: Chart.js Bar Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 py-3 px-4">
+                    <h5 class="fw-bold text-slate-800 mb-0">
+                        <i class="fa-solid fa-chart-column text-primary me-2"></i>Tỷ Lệ Khách Đăng Ký Theo Từng Tour
+                    </h5>
+                    <p class="text-muted small mb-0">Thống kê số lượng hành khách tham gia theo 5 Tour hàng đầu.</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="chart-container" style="position: relative; height:340px; width:100%;">
+                        <canvas id="tourStatsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Top Tours List Table -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white border-0 py-3 px-4">
+                    <h5 class="fw-bold text-slate-800 mb-0">
+                        <i class="fa-solid fa-trophy text-warning me-2"></i>Top Tour Đắt Khách Nhất
+                    </h5>
+                    <p class="text-muted small mb-0">Xếp hạng theo tổng lượt khách đi.</p>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4" style="width: 60px;">Hạng</th>
+                                    <th>Tên Tour</th>
+                                    <th class="pe-4 text-end">Lượt Khách</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.TopTours.Any())
+                                {
+                                    int rank = 1;
+                                    foreach (var item in Model.TopTours)
+                                    {
+                                        <tr>
+                                            <td class="ps-4">
+                                                @if (rank == 1)
+                                                {
+                                                    <span class="badge bg-warning text-dark rounded-circle p-2" style="width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center;">1</span>
+                                                }
+                                                else if (rank == 2)
+                                                {
+                                                    <span class="badge bg-secondary text-white rounded-circle p-2" style="width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center;">2</span>
+                                                }
+                                                else if (rank == 3)
+                                                {
+                                                    <span class="badge bg-danger bg-opacity-75 text-white rounded-circle p-2" style="width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center;">3</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted fw-semibold ms-2">@rank</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="fw-semibold text-slate-700 text-truncate" style="max-width: 180px;" title="@item.TenTour">
+                                                    @item.TenTour
+                                                </div>
+                                            </td>
+                                            <td class="pe-4 text-end">
+                                                <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-2 rounded-3">@item.SoKhachDat lượt</span>
+                                            </td>
+                                        </tr>
+                                        rank++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted">Chưa có dữ liệu thống kê.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var ctx = document.getElementById('tourStatsChart').getContext('2d');
+
+            // Lấy dữ liệu từ Model Razor
+            var labels = [];
+            var dataValues = [];
+
+            @foreach(var item in Model.TopTours)
+            {
+                <text>
+                    labels.push('@Html.Raw(item.TenTour)');
+                    dataValues.push(@item.SoKhachDat);
+                </text>
+            }
+
+            // Create a gorgeous vertical gradient for the bars
+            var gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.95)');
+            gradient.addColorStop(1, 'rgba(129, 140, 248, 0.35)');
+
+            var gradientHover = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientHover.addColorStop(0, 'rgba(67, 56, 202, 1)');
+            gradientHover.addColorStop(1, 'rgba(129, 140, 248, 0.6)');
+
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Số lượt hành khách',
+                        data: dataValues,
+                        backgroundColor: gradient,
+                        borderColor: 'rgb(79, 70, 229)',
+                        borderWidth: 1.5,
+                        borderRadius: 8,
+                        hoverBackgroundColor: gradientHover,
+                        barPercentage: 0.55
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            padding: 12,
+                            cornerRadius: 8,
+                            backgroundColor: '#0f172a',
+                            titleFont: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 12
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                borderDash: [5, 5],
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                },
+                                color: '#64748b'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                },
+                                color: '#64748b',
+                                callback: function(value) {
+                                    // Rút gọn nhãn dài trên biểu đồ để tránh đè chữ
+                                    var label = this.getLabelForValue(value);
+                                    if (label.length > 20) {
+                                        return label.substr(0, 20) + '...';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

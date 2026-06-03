@@ -1,0 +1,112 @@
+@model QuanLyTourDuLich.ViewModels.ChiPhiDoanFormVM
+
+@{
+    ViewData["Title"] = "Lập Phiếu Chi Mới";
+    ViewData["ActiveMenu"] = "ChiPhiDoan";
+}
+
+<div class="container-fluid p-0">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="/Admin/ChiPhiDoan" class="text-decoration-none">Chi Phí Đoàn</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Lập phiếu chi</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-plus text-primary me-2"></i>Lập Phiếu Chi Tiền Mới
+            </h1>
+            <p class="text-muted mb-0">Lập phiếu chi ghi nhận các khoản chi phí khách sạn, ăn uống, xăng dầu phát sinh thực tế cho đoàn.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom p-3">
+                    <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Thông tin chi tiết Phiếu Chi</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/Admin/ChiPhiDoan/Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-circle-exclamation fs-5 me-2"></i>
+                                    <div>
+                                        <strong>Vui lòng kiểm tra lại thông tin:</strong>
+                                        <div asp-validation-summary="All" class="text-danger mt-1 small"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaDoan" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <select asp-for="MaDoan" asp-items="Model.TourGroups" class="form-select rounded-3" required>
+                                    <option value="">-- Chọn đoàn du lịch phát sinh chi --</option>
+                                </select>
+                                <span asp-validation-for="MaDoan" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaNvChi" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <select asp-for="MaNvChi" asp-items="Model.Staffs" class="form-select rounded-3" required>
+                                    <option value="">-- Chọn người lập phiếu chi --</option>
+                                </select>
+                                <span asp-validation-for="MaNvChi" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                @* LoaiChiPhi: Tương ứng với ExpenseType trong Class Diagram *@
+                                <label asp-for="LoaiChiPhi" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <select asp-for="LoaiChiPhi" class="form-select rounded-3" required>
+                                    @foreach (var loai in QuanLyTourDuLich.ViewModels.ChiPhiDoanFormVM.DanhSachLoaiChiPhi)
+                                    {
+                                        <option value="@loai" selected="@(Model.LoaiChiPhi == loai ? "selected" : null)">@loai</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="LoaiChiPhi" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NoiDungChi" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <input asp-for="NoiDungChi" class="form-control rounded-3" placeholder="Nhập nội dung chi tiết..." required />
+                                <span asp-validation-for="NoiDungChi" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SoTien" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <div class="input-group">
+                                    <input asp-for="SoTien" type="number" min="1000" class="form-control rounded-start-3" placeholder="Nhập số tiền..." required />
+                                    <span class="input-group-text bg-light">VND</span>
+                                </div>
+                                <span asp-validation-for="SoTien" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="NgayChi" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <input asp-for="NgayChi" type="datetime-local" class="form-control rounded-3" required />
+                                <span asp-validation-for="NgayChi" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                            <a href="/Admin/ChiPhiDoan" class="btn btn-light px-4 py-2 rounded-3 border">
+                                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3">
+                                <i class="fa-solid fa-save me-1"></i> Lập phiếu chi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

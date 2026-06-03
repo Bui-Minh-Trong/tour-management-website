@@ -1,0 +1,90 @@
+@model QuanLyTourDuLich.ViewModels.PhuongTienViewModel
+
+@{
+    ViewData["Title"] = "Thêm Xe Mới";
+    ViewData["ActiveMenu"] = "PhuongTien";
+}
+
+<div class="container-fluid p-0">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="/Admin/PhuongTien" class="text-decoration-none">Phương Tiện</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-plus text-primary me-2"></i>Đăng Ký Xe Mới Vào Đội Xe
+            </h1>
+            <p class="text-muted mb-0">Thêm biển số xe, dòng xe, số ghế ngồi và thiết lập trạng thái hoạt động ban đầu.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom p-3">
+                    <h5 class="mb-0 font-weight-bold text-dark" style="font-weight: 600;">Thông tin xe vận chuyển</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/Admin/PhuongTien/Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-circle-exclamation fs-5 me-2"></i>
+                                    <div>
+                                        <strong>Vui lòng kiểm tra lại thông tin:</strong>
+                                        <div asp-validation-summary="All" class="text-danger mt-1 small"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BienSoXe" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <input asp-for="BienSoXe" class="form-control rounded-3 font-mono text-uppercase" placeholder="Nhập biển số xe (VD: 51B-12345)..." required />
+                                <span asp-validation-for="BienSoXe" class="text-danger small"></span>
+                                <small class="text-muted">Biển số phải đúng định dạng: 2 số + 1 chữ + gạch ngang + 4 hoặc 5 số.</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LoaiXe" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <input asp-for="LoaiXe" class="form-control rounded-3" placeholder="Nhập dòng xe/thương hiệu (VD: Universe Limousine)..." required />
+                                <span asp-validation-for="LoaiXe" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SoChoNgoi" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <input asp-for="SoChoNgoi" type="number" class="form-control rounded-3" placeholder="Nhập số lượng ghế ngồi..." required />
+                                <span asp-validation-for="SoChoNgoi" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TrangThai" class="form-label font-weight-semibold" style="font-weight: 500;"></label>
+                                <select asp-for="TrangThai" class="form-select rounded-3" required>
+                                    <option value="Hoạt động">Hoạt động (Sẵn sàng)</option>
+                                    <option value="Bảo trì">Đang bảo trì/sửa chữa</option>
+                                </select>
+                                <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                            <a href="/Admin/PhuongTien" class="btn btn-light px-4 py-2 rounded-3 border">
+                                <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3">
+                                <i class="fa-solid fa-save me-1"></i> Thêm xe
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

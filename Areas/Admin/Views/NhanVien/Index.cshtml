@@ -1,0 +1,241 @@
+@model IEnumerable<QuanLyTourDuLich.ViewModels.NhanVienViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý Nhân Sự & Tài Khoản";
+    ViewData["ActiveMenu"] = "NhanVien";
+}
+
+<div class="container-fluid p-0">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-user-gear text-primary me-2"></i>Quản Lý Nhân Sự & Tài Khoản
+            </h1>
+            <p class="text-muted mb-0">Quản lý hồ sơ nhân viên, phân công chức vụ và cấp phát tài khoản đăng nhập hệ thống.</p>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <a href="/Admin/NhanVien/Create" class="btn btn-primary px-4 py-2 shadow-sm rounded-3">
+                <i class="fa-solid fa-plus me-2"></i>Thêm Nhân Viên
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-circle-check fs-5 me-2"></i>
+                <div>@TempData["SuccessMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-circle-exclamation fs-5 me-2"></i>
+                <div>@TempData["ErrorMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Search Card -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-body p-3">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Tìm kiếm theo họ tên, chức vụ, số điện thoại..." />
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Table Card -->
+    <div class="card border-0 shadow-sm rounded-3 overflow-hidden card-table">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="nhanVienTable">
+                <thead class="table-light text-uppercase fs-7 font-weight-bold text-secondary">
+                    <tr>
+                        <th class="ps-4" style="width: 80px;">Mã NV</th>
+                        <th>Họ Tên</th>
+                        <th>Chức Vụ</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Email</th>
+                        <th>Ngày Vào Làm</th>
+                        <th class="text-center" style="width: 180px;">Tài Khoản</th>
+                        <th class="text-center pe-4" style="width: 220px;">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 font-weight-bold text-primary">#@item.MaNv</td>
+                                <td>
+                                    <div class="font-weight-bold text-dark" style="font-weight: 600;">@item.HoTen</div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border px-2.5 py-1.5 font-weight-semibold">@item.ChucVu</span>
+                                </td>
+                                <td>
+                                    <span class="font-weight-semibold text-dark"><i class="fa-solid fa-phone text-secondary me-1"></i>@item.Sdt</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted">@(item.Email ?? "N/A")</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted"><i class="fa-regular fa-calendar me-1"></i>@item.NgayVaoLam.ToString("dd/MM/yyyy")</span>
+                                </td>
+                                <td class="text-center">
+                                    @if (item.HasAccount)
+                                    {
+                                        <div class="small">
+                                            <span class="badge bg-success px-3 py-1.5 rounded-pill mb-1"><i class="fa-solid fa-circle-check me-1"></i>Đã cấp</span>
+                                        </div>
+                                        <div class="text-muted fs-8 font-weight-semibold">User: <strong class="text-dark">@item.TenDangNhap</strong> (@item.TenVaiTro)</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning-light text-warning px-3 py-1.5 rounded-pill"><i class="fa-solid fa-circle-minus me-1"></i>Chưa cấp</span>
+                                    }
+                                </td>
+                                <td class="text-center pe-4">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        @if (!item.HasAccount)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-warning text-dark rounded-3 px-2 py-1 fs-7" data-bs-toggle="modal" data-bs-target="#createAccountModal" data-nv-id="@item.MaNv" data-nv-name="@item.HoTen" title="Cấp tài khoản truy cập">
+                                                <i class="fa-solid fa-key me-1"></i> Cấp tài khoản
+                                            </button>
+                                        }
+                                        <a href="/Admin/NhanVien/Edit/@item.MaNv" class="btn btn-sm btn-outline-primary rounded-3" title="Chỉnh sửa thông tin">
+                                            <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                        </a>
+                                        <form action="/Admin/NhanVien/Delete/@item.MaNv" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhân viên này không?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-3" title="Xóa nhân viên">
+                                                <i class="fa-solid fa-trash"></i> Xóa
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-user-gear fs-1 mb-3 d-block text-secondary"></i>
+                                Chưa có hồ sơ nhân viên nào.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cấp Tài Khoản -->
+<div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-3">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title font-weight-bold" id="createAccountModalLabel"><i class="fa-solid fa-key text-warning me-2"></i>Cấp Tài Khoản Nhân Viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/Admin/NhanVien/CreateAccount" method="post">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="MaNv" id="modalMaNv" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label font-weight-semibold">Nhân viên được cấp:</label>
+                        <input type="text" id="modalHoTen" class="form-control bg-light" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-semibold">Tên đăng nhập:</label>
+                        <input type="text" name="TenDangNhap" id="modalTenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập (không dấu)..." required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-semibold">Mật khẩu:</label>
+                        <input type="password" name="MatKhau" class="form-control" placeholder="Nhập mật khẩu..." required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-semibold">Vai trò:</label>
+                        <select name="MaVaiTro" class="form-select" required>
+                            <option value="1">Quản Trị Viên (Admin)</option>
+                            <option value="2">Kế Toán Tài Chính</option>
+                            <option value="3">Điều Hành Tour</option>
+                            <option value="4">Nhân Viên Bán Hàng</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning text-dark"><i class="fa-solid fa-check me-1"></i> Cấp tài khoản</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const tableRows = document.querySelectorAll("#nhanVienTable tbody tr");
+
+            searchInput.addEventListener("input", function() {
+                const searchText = searchInput.value.toLowerCase().trim();
+
+                tableRows.forEach(row => {
+                    if (row.cells.length < 2) return;
+
+                    const name = row.cells[1].innerText.toLowerCase();
+                    const title = row.cells[2].innerText.toLowerCase();
+                    const phone = row.cells[3].innerText.toLowerCase();
+
+                    const matches = name.includes(searchText) || title.includes(searchText) || phone.includes(searchText);
+
+                    if (matches) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+
+            // Set up modal properties on trigger
+            const createAccountModal = document.getElementById('createAccountModal');
+            if (createAccountModal) {
+                createAccountModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const nvId = button.getAttribute('data-nv-id');
+                    const nvName = button.getAttribute('data-nv-name');
+
+                    const inputMaNv = createAccountModal.querySelector('#modalMaNv');
+                    const inputHoTen = createAccountModal.querySelector('#modalHoTen');
+                    const inputTenDangNhap = createAccountModal.querySelector('#modalTenDangNhap');
+
+                    inputMaNv.value = nvId;
+                    inputHoTen.value = nvName;
+                    
+                    // Generate a default username from name
+                    const rawUser = nvName.toLowerCase()
+                                           .normalize("NFD")
+                                           .replace(/[\u0300-\u036f]/g, "")
+                                           .replace(/\s+/g, "");
+                    inputTenDangNhap.value = rawUser;
+                });
+            }
+        });
+    </script>
+}

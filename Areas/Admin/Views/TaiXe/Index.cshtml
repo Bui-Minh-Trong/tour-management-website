@@ -1,0 +1,91 @@
+@model IEnumerable<QuanLyTourDuLich.ViewModels.TaiXeViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý Tài Xế";
+    ViewData["ActiveMenu"] = "TaiXe";
+}
+
+<div class="container-fluid p-0">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h1 class="h3 mb-0 text-gray-800 font-weight-bold" style="font-weight: 700;">
+                <i class="fa-solid fa-id-card text-primary me-2"></i>Quản Lý Tài Xế
+            </h1>
+            <p class="text-muted mb-0">Quản lý đội ngũ lái xe, bằng lái và thông tin liên hệ của tài xế vận chuyển.</p>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <a href="/Admin/TaiXe/Create" class="btn btn-primary px-4 py-2 shadow-sm rounded-3">
+                <i class="fa-solid fa-plus me-2"></i>Thêm Tài Xế
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-circle-check fs-5 me-2"></i>
+                <div>@TempData["SuccessMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Drivers Table Card -->
+    <div class="card border-0 shadow-sm rounded-3 overflow-hidden card-table">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-uppercase fs-7 font-weight-bold text-secondary">
+                    <tr>
+                        <th class="ps-4" style="width: 80px;">Mã</th>
+                        <th>Họ và Tên</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Số GPLX</th>
+                        <th>Loại Bằng Lái</th>
+                        <th class="text-center pe-4" style="width: 150px;">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 font-weight-bold text-primary">#@item.MaTaiXe</td>
+                                <td>
+                                    <div class="font-weight-bold text-dark">@item.HoTen</div>
+                                </td>
+                                <td>
+                                    <span class="font-weight-semibold text-dark"><i class="fa-solid fa-phone text-secondary me-1"></i>@item.Sdt</span>
+                                </td>
+                                <td>
+                                    <span class="text-dark font-mono">@item.SoGplx</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-blue-light text-primary px-2.5 py-1.5"><i class="fa-solid fa-address-card me-1"></i>@item.LoaiBangLai</span>
+                                </td>
+                                <td class="text-center pe-4">
+                                    <form action="/Admin/TaiXe/Delete/@item.MaTaiXe" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài xế này khỏi danh sách?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-3">
+                                            <i class="fa-solid fa-trash"></i> Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-id-card fs-1 mb-3 d-block text-secondary"></i>
+                                Chưa có tài xế nào trong đội ngũ.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

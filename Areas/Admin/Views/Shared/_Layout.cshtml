@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin TourManagement</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 70px;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --sidebar-bg: #0f172a;
+            --sidebar-color: #94a3b8;
+            --sidebar-active-bg: #1e293b;
+            --sidebar-active-color: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        #sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-color);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        #sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid #1e293b;
+            text-decoration: none;
+            color: #f8fafc;
+        }
+
+        .sidebar-brand i {
+            font-size: 1.5rem;
+            color: #38bdf8;
+        }
+
+        .sidebar-brand span {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        #sidebar.collapsed .sidebar-brand span {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0;
+            margin: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            margin: 0.25rem 0.75rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            color: var(--sidebar-color);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-link:hover {
+            background-color: var(--sidebar-active-bg);
+            color: #f8fafc;
+        }
+
+        .sidebar-link.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .sidebar-link i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        #sidebar.collapsed .sidebar-link span {
+            display: none;
+        }
+
+        /* Main Content Wrapper */
+        #content-wrapper {
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #content-wrapper.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .toggle-sidebar-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+        }
+
+        .toggle-sidebar-btn:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e2e8f0;
+        }
+
+        .user-info {
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .main-content {
+            padding: 1.75rem;
+            flex-grow: 1;
+            animation: fadeInUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hover animation upgrades */
+        .card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.08), 0 8px 16px -4px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        .sidebar-link {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .sidebar-link:hover i {
+            transform: scale(1.15) rotate(3deg);
+            color: #38bdf8 !important;
+        }
+        .sidebar-link i {
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        
+        .sidebar-link.active {
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+        }
+
+        /* Beautiful styled scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.2);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 1rem 1.5rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        /* Modern Table Card */
+        .card-table {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            border: none;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .card-table-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* Responsive styling for small screens */
+        @@media(max-width: 768px) {
+            #sidebar {
+                width: var(--sidebar-collapsed-width);
+            }
+            #sidebar.active {
+                width: var(--sidebar-width);
+            }
+            #sidebar.active .sidebar-brand span,
+            #sidebar.active .sidebar-link span {
+                display: block;
+                opacity: 1;
+            }
+            #sidebar .sidebar-brand span,
+            #sidebar .sidebar-link span {
+                display: none;
+            }
+            #content-wrapper {
+                margin-left: var(--sidebar-collapsed-width);
+            }
+            #content-wrapper.active {
+                margin-left: var(--sidebar-width);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left Sidebar -->
+    <nav id="sidebar">
+        <a href="/Admin" class="sidebar-brand">
+            <i class="fa-solid fa-compass-drafting"></i>
+            <span>VINA TRAVEL</span>
+        </a>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="/Admin/Tour" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "Tour" ? "active" : "")">
+                    <i class="fa-solid fa-route"></i>
+                    <span>Quản lý Tour</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/DoanDuLich" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "DoanDuLich" ? "active" : "")">
+                    <i class="fa-solid fa-users-rectangle"></i>
+                    <span>Quản lý Đoàn</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/Booking" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "Booking" ? "active" : "")">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Đặt Tour</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/HoaDon" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "HoaDon" ? "active" : "")">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Hóa Đơn</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/KhachHang" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "KhachHang" ? "active" : "")">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Khách Hàng</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/NhanVien" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "NhanVien" ? "active" : "")">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Nhân Sự</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/KhuyenMai" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "KhuyenMai" ? "active" : "")">
+                    <i class="fa-solid fa-tags"></i>
+                    <span>Khuyến Mãi</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/ChiPhiDoan" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "ChiPhiDoan" ? "active" : "")">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>Chi Phí Đoàn</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/KhachSan" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "KhachSan" ? "active" : "")">
+                    <i class="fa-solid fa-hotel"></i>
+                    <span>Khách Sạn</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/PhuongTien" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "PhuongTien" ? "active" : "")">
+                    <i class="fa-solid fa-bus"></i>
+                    <span>Phương Tiện</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="/Admin/TaiXe" class="sidebar-link @(ViewData["ActiveMenu"]?.ToString() == "TaiXe" ? "active" : "")">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>Tài Xế</span>
+                </a>
+            </li>
+            <li class="sidebar-item mt-auto">
+                <a href="/Admin/Tour" class="sidebar-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Trang Chủ Admin</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper">
+        
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <button class="toggle-sidebar-btn" id="toggleSidebar" title="Thu phóng Sidebar">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <div class="user-profile dropdown-toggle" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop" class="user-avatar" alt="Admin Avatar" />
+                        <div class="user-info d-none d-sm-block">
+                            <div class="user-name">@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "Bùi Minh Trọng")</div>
+                            <div class="user-role">@(User.Identity?.IsAuthenticated == true ? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value : "Quản trị viên")</div>
+                        </div>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" href="#"><i class="fa-regular fa-user me-2"></i>Hồ sơ cá nhân</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-gear me-2"></i>Cài đặt</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="/Auth/Logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            @RenderBody()
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <span>&copy; @DateTime.Now.Year - Hệ thống Quản Lý Tour Du Lịch - VinaTravel. Mọi quyền được bảo lưu.</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sidebar = document.getElementById("sidebar");
+            const wrapper = document.getElementById("content-wrapper");
+            const toggleBtn = document.getElementById("toggleSidebar");
+
+            // Toggle sidebar click handler
+            toggleBtn.addEventListener("click", function() {
+                sidebar.classList.toggle("collapsed");
+                wrapper.classList.toggle("expanded");
+                
+                // For mobile responsive toggle
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle("active");
+                    wrapper.classList.toggle("active");
+                }
+            });
+            
+            // Adjust sidebar on window resize
+            window.addEventListener("resize", function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove("active");
+                    wrapper.classList.remove("active");
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
