@@ -59,8 +59,8 @@ public class BookingController : Controller
             SoNguoiDi = 5,
             NgayDangKy = DateTime.Now.AddDays(-1),
             DonGia = 4500000,
-            SoTienGiam = 500000,
             TrangThaiThanhToan = "Chưa thanh toán"
+        }
     };
 
     private static readonly List<ChiTietKhachDiTour> MockMemberList = new()

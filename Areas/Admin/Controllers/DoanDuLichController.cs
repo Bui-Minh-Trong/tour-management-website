@@ -527,7 +527,6 @@ public class DoanDuLichController : Controller
                 model.Incomes = invoices;
                 model.TongThu = invoices.Sum(i => i.SoTien);
 
-                // 2. Chi phí (Bảng chi phí đoàn)
                 var expenses = await _context.ChiPhiDoans
                     .Where(c => c.MaDoan == groupId)
                     .Select(c => new SettlementExpenseVM
@@ -535,7 +534,7 @@ public class DoanDuLichController : Controller
                         MaChiPhi = c.MaChiPhi,
                         LoaiChiPhi = c.LoaiChiPhi,
                         SoTien = c.SoTien,
-                        GhiChu = c.GhiChu ?? "N/A"
+                        GhiChu = c.NoiDungChi
                     })
                     .ToListAsync();
 
