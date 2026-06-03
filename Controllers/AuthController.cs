@@ -69,7 +69,7 @@ public class AuthController : Controller
                 MatKhau = "admin", // khớp mật khẩu trần
                 TrangThai = true,
                 MaNvNavigation = new NhanVien { HoTen = "Bùi Minh Trọng (Admin)" },
-                MaVaiTroNavigation = new VaiTro { TenVaiTro = "Quản trị" }
+                MaVaiTroNavigation = new VaiTro { TenVaiTro = "Quản Trị Viên" }
             };
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyTourDuLich.Models;
@@ -11,6 +12,7 @@ namespace QuanLyTourDuLich.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Route("Admin/[controller]/[action]/{id?}")]
+[Authorize(Roles = "Quản Trị Viên,Điều Hành Tour,Kế Toán Tài Chính")]
 public class KhuyenMaiController : Controller
 {
     private readonly QlyTourDuLichContext _context;

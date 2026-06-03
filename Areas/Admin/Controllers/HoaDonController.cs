@@ -14,7 +14,7 @@ namespace QuanLyTourDuLich.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Route("Admin/[controller]/[action]/{id?}")]
-[Authorize(Roles = "Quản trị,Kế Toán Tài Chính,Nhân viên")]
+[Authorize(Roles = "Quản Trị Viên,Kế Toán Tài Chính")]
 public class HoaDonController : Controller
 {
     private readonly QlyTourDuLichContext _context;

@@ -13,7 +13,7 @@ namespace QuanLyTourDuLich.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Route("Admin/[controller]/[action]/{id?}")]
-[Authorize(Roles = "Quản trị,Nhân viên,Hướng dẫn viên")]
+[Authorize(Roles = "Quản Trị Viên,Điều Hành Tour,Kế Toán Tài Chính")]
 public class TourController : Controller
 {
     private readonly QlyTourDuLichContext _context;
