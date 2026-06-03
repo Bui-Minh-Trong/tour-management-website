@@ -112,6 +112,73 @@ public class AuthController : Controller
         return RedirectToAction("Index", "Home", new { area = "Admin" });
     }
 
+    // GET: Auth/ChangePassword
+    [Authorize]
+    public IActionResult ChangePassword()
+    {
+        return View(new ChangePasswordVM());
+    }
+
+    // POST: Auth/ChangePassword
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(username))
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        var account = await _context.TaiKhoans.SingleOrDefaultAsync(x => x.TenDangNhap == username);
+        if (account == null)
+        {
+            ModelState.AddModelError("", "Không tìm thấy tài khoản người dùng.");
+            return View(model);
+        }
+
+        // Xác thực mật khẩu cũ
+        bool isOldPasswordValid = false;
+        try
+        {
+            var hasher = new PasswordHasher<TaiKhoan>();
+            var verificationResult = hasher.VerifyHashedPassword(account, account.MatKhau, model.CurrentPassword);
+            isOldPasswordValid = verificationResult != PasswordVerificationResult.Failed;
+        }
+        catch (System.FormatException)
+        {
+            isOldPasswordValid = false;
+        }
+
+        // Tương thích ngược mật khẩu trần
+        if (!isOldPasswordValid && account.MatKhau.Trim() == model.CurrentPassword.Trim())
+        {
+            isOldPasswordValid = true;
+        }
+
+        if (!isOldPasswordValid)
+        {
+            ModelState.AddModelError("CurrentPassword", "Mật khẩu hiện tại không chính xác.");
+            return View(model);
+        }
+
+        // Cập nhật mật khẩu mới bằng cách băm
+        var passwordHasher = new PasswordHasher<TaiKhoan>();
+        account.MatKhau = passwordHasher.HashPassword(account, model.NewPassword);
+
+        _context.Entry(account).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+        return RedirectToAction("Index", "Home", new { area = "Admin" });
+    }
+
     // POST/GET: Auth/Logout
     [HttpGet]
     [HttpPost]
